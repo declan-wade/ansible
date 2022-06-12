@@ -1,0 +1,75 @@
+- name: Update and upgrade apt packages
+  hosts: all  
+  tasks:
+
+  - name: update and upgrade APT
+    become_method: sudo
+    become: true
+    apt:
+      upgrade: yes
+      update_cache: yes
+      
+  - name: Add backports repo
+    become_method: sudo
+    become: true
+    ansible.builtin.apt_repository:
+      repo: deb http://deb.debian.org/debian bullseye-backports main
+      filename: backports
+
+  - name: Create keyring file
+    become_method: sudo
+    become: true
+    ansible.builtin.file:
+      path: /etc/apt/keyrings
+      state: directory
+
+  - name: Add docker GPG key
+    become_method: sudo 
+    become: true
+    ansible.builtin.apt_key:
+      url: https://download.docker.com/linux/debian/gpg
+      keyring: /etc/apt/keyrings/docker.gpg
+
+  - name: Add docker repo
+    become_method: sudo
+    become: true
+    ansible.builtin.apt_repository:
+      repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian   bullseye stable
+      filename: docker
+
+  - name: Install docker engine
+    become_method: sudo
+    become: true
+    apt:
+      pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+      - curl
+      - python3-pip
+      - python3-setuptools
+    
+  - name: ensure required pip-packages are installed
+    become_method: sudo
+    become: true
+    pip:
+      name: 
+       - docker
+       - docker-compose
+
+  - name: Install cockpit 
+    become_method: sudo 
+    become: true 
+    apt:
+      name: cockpit
+      default_release: bullseye-backports
+      update_cache: yes
+      
+  - name: Add watchtower container
+    become_method: sudo
+    become: true 
+    docker_container: 
+      name: Watchtower 
+      image: containrrr/watchtower 
+      restart_policy: always
