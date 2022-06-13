@@ -48,7 +48,9 @@
       - docker-compose-plugin
       - curl
       - python3-pip
-      - python3-setuptools
+      - python3-setuptool
+      - git
+      - htop
     
   - name: ensure required pip-packages are installed
     become_method: sudo
