@@ -1,4 +1,4 @@
-- name: Update and upgrade apt packages
+- name: Prepare all
   hosts: all  
   tasks:
 
@@ -37,7 +37,7 @@
       repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian   bullseye stable
       filename: docker
 
-  - name: Install docker engine
+  - name: Install necessary packages
     become_method: sudo
     become: true
     apt:
@@ -51,6 +51,7 @@
       - python3-setuptool
       - git
       - htop
+      - ntfs-3g
     
   - name: ensure required pip-packages are installed
     become_method: sudo
@@ -60,11 +61,13 @@
        - docker
        - docker-compose
 
-  - name: Install cockpit 
+  - name: Install cockpit and ZFS
     become_method: sudo 
     become: true 
     apt:
-      name: cockpit
+      pkg: 
+      - cockpit
+      - zfsutils-linux
       default_release: bullseye-backports
       update_cache: yes
       
