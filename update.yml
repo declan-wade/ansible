@@ -15,6 +15,16 @@
     ansible.builtin.apt_repository:
       repo: deb http://deb.debian.org/debian bullseye-backports main
       filename: backports
+      
+  - name: Install prerequisites
+    become_method: sudo
+    become: true
+    apt:
+      pkg:
+      - ca-certificates
+      - gnupg
+      - lsb-release
+      - curl
 
   - name: Create keyring file
     become_method: sudo
@@ -46,7 +56,6 @@
       - docker-ce-cli
       - containerd.io
       - docker-compose-plugin
-      - curl
       - python3-pip
       - python3-setuptool
       - git
