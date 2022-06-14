@@ -13,7 +13,7 @@
     become_method: sudo
     become: true
     ansible.builtin.apt_repository:
-      repo: deb http://deb.debian.org/debian bullseye-backports main
+      repo: deb http://deb.debian.org/debian bullseye-backports main contrib non-free
       filename: backports
       
   - name: Install prerequisites
@@ -25,6 +25,7 @@
       - gnupg
       - lsb-release
       - curl
+      - linux-headers-amd64
 
   - name: Create keyring file
     become_method: sudo
@@ -57,7 +58,7 @@
       - containerd.io
       - docker-compose-plugin
       - python3-pip
-      - python3-setuptool
+      - python3
       - git
       - htop
       - ntfs-3g
@@ -87,3 +88,5 @@
       name: Watchtower 
       image: containrrr/watchtower 
       restart_policy: always
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
